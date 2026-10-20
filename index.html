@@ -133,24 +133,23 @@
             <span class="text-xs uppercase tracking-widest font-sans text-mustard-400 font-medium">Toca el sello para abrir</span>
         </p>
 
-        <!-- Contenedor del Sobre 3D en Terracota rica -->
-        <div id="envelopeCard" class="envelope-wrapper relative w-[90%] max-w-[340px] h-[250px] bg-terracotta-700 rounded-2xl shadow-2xl flex flex-col items-center justify-between overflow-hidden cursor-pointer border border-terracotta-600">
-            <!-- Solapa superior plegable en Terracota limpia y estilizada -->
-            <div id="flap" class="envelope-flap absolute top-0 left-0 w-full h-[145px] bg-terracotta-800 border-b border-terracotta-900/40 shadow-md z-20 flex flex-col items-center pt-7 px-4 pointer-events-none">
+        <!-- Contenedor del Sobre 3D en Marfil elegante con textura y sombra -->
+        <div id="envelopeCard" class="envelope-wrapper relative w-[90%] max-w-[340px] h-[250px] bg-[#F7F3EB] rounded-2xl shadow-2xl flex flex-col items-center justify-between overflow-hidden cursor-pointer border border-[#E8DFC8]">
+            <!-- Solapa superior plegable en Marfil con ligera sombra -->
+            <div id="flap" class="envelope-flap absolute top-0 left-0 w-full h-[145px] bg-[#EDE5D6] border-b border-[#D8CBB5] shadow-md z-20 flex flex-col items-center pt-7 px-4 pointer-events-none">
             </div>
 
-            <!-- Sello de Cera Mostaza / Ocre Dorado Reluciente (ubicado en el vértice de la solapa) -->
-            <div id="waxSeal" class="wax-seal pulse-seal absolute top-[105px] z-30 w-15 h-15 rounded-full bg-gradient-to-tr from-amber-700 via-mustard-500 to-amber-300 flex items-center justify-center border-2 border-yellow-100/60 shadow-2xl transition-all duration-500">
-                <div class="w-12 h-12 rounded-full border border-dashed border-amber-900/50 flex flex-col items-center justify-center p-1">
-                    <span class="font-serif font-bold text-plum-900 text-[11px] tracking-tighter">A & A</span>
-                    <i class="fa-solid fa-heart text-[7px] text-terracotta-700 mt-0.5"></i>
+            <!-- Sello de Cera en Verde Eucalipto / Bosque Profundo con relieve y acento dorado -->
+            <div id="waxSeal" class="wax-seal pulse-seal absolute top-[105px] z-30 w-15 h-15 rounded-full bg-gradient-to-tr from-[#1b352c] via-[#2d5749] to-[#3a6b5a] flex items-center justify-center border-2 border-[#ca8a3e]/70 shadow-2xl transition-all duration-500">
+                <div class="w-12 h-12 rounded-full border border-dashed border-[#ca8a3e]/60 flex flex-col items-center justify-center p-1 bg-[#234439]/50 shadow-inner">
+                    <span class="font-serif font-bold text-dustyRose-50 text-[11px] tracking-tighter">A & A</span>
+                    <i class="fa-solid fa-heart text-[7px] text-mustard-400 mt-0.5"></i>
                 </div>
             </div>
 
-            <!-- Sección inferior del sobre: Nombres de los novios debajo del sello -->
+            <!-- Sección inferior del sobre: Nombres de los novios en Marfil -->
             <div class="absolute bottom-5 z-10 w-full flex flex-col items-center px-4 text-center pointer-events-none">
-                <h2 class="font-script text-3xl sm:text-4xl text-dustyRose-50 tracking-wide drop-shadow-sm leading-tight">Alma &amp; Abiel</h2>
-                
+                <h2 class="font-script text-3xl sm:text-4xl text-terracotta-700 tracking-wide drop-shadow-sm leading-tight">Alma &amp; Abiel</h2>
             </div>
             
         </div>
@@ -172,23 +171,34 @@
             Tu navegador no soporta el audio.
         </audio>
 
-        <!-- HEADER / PORTADA CON SOLAPA DECORATIVA SUPERIOR EN TERRACOTA -->
-        <header class="relative bg-terracotta-700 text-center pt-10 pb-8 px-6 text-white shadow-lg overflow-hidden">
-            <!-- Detalles en ocre y verde bosque decorativos -->
-            <div class="absolute -top-10 -right-10 w-28 h-28 rounded-full border border-mustard-400/20 pointer-events-none"></div>
+        <!-- HEADER / PORTADA CON IMAGEN DE FONDO Y SOLAPA DECORATIVA INFERIOR -->
+        <header class="relative text-center pt-12 pb-10 px-6 text-white shadow-lg overflow-hidden bg-stone-900">
+            <!-- Imagen de fondo con overlay elegante para garantizar legibilidad -->
+            <img src="https://i.postimg.cc/t4MBgDPf/aa3.jpg" 
+                 alt="Fondo Portada" 
+                 class="absolute inset-0 w-full h-full object-cover object-center filter brightness-[0.45] saturate-[1.1] scale-105 pointer-events-none">
+            
+            <!-- Degradado sutil con matices terracota para fusionar con la paleta -->
+            <div class="absolute inset-0 bg-gradient-to-b from-terracotta-900/60 via-stone-950/40 to-terracotta-950/80 pointer-events-none"></div>
+
+            <!-- Detalles circulares decorativos -->
+            <div class="absolute -top-10 -right-10 w-28 h-28 rounded-full border border-mustard-400/25 pointer-events-none"></div>
             <div class="absolute -bottom-8 -left-8 w-24 h-24 rounded-full border border-eucalyptus-500/25 pointer-events-none"></div>
 
-            <p class="font-sans uppercase text-[10px] tracking-[0.3em] text-dustyRose-200/90 mb-2">Nuestra Boda</p>
-            <h1 class="font-script text-5xl sm:text-6xl text-dustyRose-50 drop-shadow-sm leading-tight">Alma</h1>
-            <span class="font-script text-3xl text-mustard-400 block my-1">&amp;</span>
-            <h1 class="font-script text-5xl sm:text-6xl text-dustyRose-50 drop-shadow-sm leading-tight">Abiel</h1>
+            <!-- Contenido con posición relativa y sombras para destacar sobre la imagen -->
+            <div class="relative z-10">
+                <p class="font-sans uppercase text-[10px] tracking-[0.3em] text-dustyRose-200/90 mb-2 drop-shadow">Nuestra Boda</p>
+                <h1 class="font-script text-5xl sm:text-6xl text-dustyRose-50 drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)] leading-tight">Alma</h1>
+                <span class="font-script text-3xl text-mustard-400 block my-1 drop-shadow-md">&amp;</span>
+                <h1 class="font-script text-5xl sm:text-6xl text-dustyRose-50 drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)] leading-tight">Abiel</h1>
 
-            <div class="inline-block mt-4 px-4 py-1 border-t border-b border-mustard-400/50">
-                <span class="font-serif tracking-widest text-xs uppercase text-dustyRose-100">28 . Noviembre . 2026</span>
+                <div class="inline-block mt-4 px-5 py-1 border-t border-b border-mustard-400/60 backdrop-blur-[2px]">
+                    <span class="font-serif tracking-widest text-xs uppercase text-dustyRose-100 drop-shadow">28 . Noviembre . 2026</span>
+                </div>
             </div>
 
-            <!-- Adorno corte angular inferior tipo solapa -->
-            <div class="absolute bottom-0 left-0 right-0 h-4 bg-cream" style="clip-path: polygon(0 100%, 50% 0, 100% 100%);"></div>
+            <!-- Adorno corte angular inferior tipo solapa que se mantiene idéntico -->
+            <div class="absolute bottom-0 left-0 right-0 h-4 bg-cream z-10" style="clip-path: polygon(0 100%, 50% 0, 100% 100%);"></div>
         </header>
 
         <!-- SECCIÓN: CITA BÍBLICA Y MONOGRAMA -->
@@ -229,7 +239,7 @@
         <!-- FOTO PRINCIPAL DE LOS NOVIOS -->
         <section class="px-5 mb-8">
             <div class="relative p-2 bg-white shadow-lg rounded-xl overflow-hidden border border-dustyRose-200">
-                <img src="https://i.postimg.cc/t4MBgDPf/aa3.jpg" 
+                <img src="https://i.postimg.cc/wjGwBFJZ/aa1.jpg" 
                      alt="Alma y Abiel" 
                      class="w-full h-80 object-cover rounded-lg filter brightness-[1.02] contrast-[0.98]">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent pointer-events-none rounded-xl"></div>
@@ -357,7 +367,7 @@
 
             <!-- Segunda foto de novios -->
             <div class="p-2 bg-white shadow-md rounded-xl max-w-[280px] mx-auto mb-6 border border-dustyRose-200">
-                <img src="https://i.postimg.cc/wjGwBFJZ/aa1.jpg" 
+                <img src="https://i.postimg.cc/dVx50ndg/aa2.jpg" 
                      alt="Recepción" 
                      class="w-full h-64 object-cover rounded-lg">
             </div>
@@ -580,7 +590,7 @@
                 
                 <p class="text-[10px] uppercase font-sans tracking-wider text-dustyRose-300">Número de Tarjeta:</p>
                 <div class="flex items-center justify-between mt-0.5 bg-eucalyptus-950/70 px-2.5 py-1.5 rounded-lg border border-eucalyptus-700/50">
-                    <span id="cardNumberText" class="font-mono text-xs text-mustard-300 font-semibold tracking-wider">5579 1003 7689 1899</span>
+                    <span id="cardNumberText" class="font-mono text-xs text-mustard-300 font-semibold tracking-wider">5579100376891899</span>
                     <button onclick="copyBankCard()" title="Copiar número" class="ml-2 text-dustyRose-200 hover:text-mustard-400 active:scale-90 transition p-1">
                         <i id="copyCardIcon" class="fa-regular fa-copy text-xs"></i>
                     </button>
@@ -594,7 +604,7 @@
         <!-- FOTO 3 DE LOS NOVIOS -->
         <section class="px-5 mb-10">
             <div class="relative p-2 bg-white shadow-lg rounded-xl overflow-hidden border border-dustyRose-200">
-                <img src="https://i.postimg.cc/dVx50ndg/aa2.jpg" 
+                <img src="https://i.postimg.cc/x8qLzVKC/aa4.jpg" 
                      alt="Alma y Abiel" 
                      class="w-full h-72 object-cover rounded-lg filter brightness-[1.02]">
             </div>
