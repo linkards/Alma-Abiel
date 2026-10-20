@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nuestra Boda | Alma & Abiel</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Great Vibes (cursiva), Playfair Display (elegante) e Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        // Paleta extraída directamente de la imagen del ramo:
+                        // 1: Vino ciruela, 2: Rosa palo, 3: Ocre/Mostaza, 4: Verde bosque, 5: Terracota
+                        plum: {
+                            800: '#581d2c',
+                            900: '#431420',
+                        },
+                        dustyRose: {
+                            50: '#faf4f4',
+                            100: '#f5e8e8',
+                            200: '#edd5d5',
+                            300: '#d9abaa',
+                            400: '#c68d8c',
+                        },
+                        mustard: {
+                            400: '#e5a855',
+                            500: '#ca8a3e',
+                            600: '#ab702c',
+                        },
+                        eucalyptus: {
+                            500: '#3a6b5a',
+                            700: '#2d5749',
+                            800: '#234439',
+                            900: '#1b352c',
+                        },
+                        terracotta: {
+                            100: '#faede8',
+                            200: '#f3d5cb',
+                            400: '#cf6b52',
+                            600: '#a84e38',
+                            700: '#94412d',
+                            800: '#7c3523',
+                        },
+                        cream: '#FAF6F0',
+                        sand: '#F2ECE1',
+                    },
+                    fontFamily: {
+                        script: ['"Great Vibes"', 'cursive'],
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['"Montserrat"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Textura sutil y acabados con tonalidades cálidas */
+        body {
+            background-color: #ede7dc;
+            font-family: 'Montserrat', sans-serif;
+            color: #3b2c28;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .bg-linen {
+            background-color: #FAF6F0;
+            background-image: radial-gradient(#e5dbcb 0.85px, transparent 0.85px);
+            background-size: 16px 16px;
+        }
+
+        /* Simulación del sobre interactivo 3D */
+        .envelope-wrapper {
+            perspective: 1200px;
+            transition: all 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .envelope-flap {
+            transform-origin: top center;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            clip-path: polygon(0 0, 100% 0, 50% 100%);
+        }
+
+        .envelope-open .envelope-flap {
+            transform: rotateX(180deg);
+            z-index: 10;
+        }
+
+        .envelope-open .wax-seal {
+            opacity: 0;
+            transform: scale(0.6) translateY(-20px);
+            pointer-events: none;
+        }
+
+        /* Animación suave de flotación */
+        @keyframes subtlePulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 10px 25px -5px rgba(168, 78, 56, 0.45); }
+            50% { transform: scale(1.05); box-shadow: 0 16px 32px -5px rgba(168, 78, 56, 0.65); }
+        }
+
+        .pulse-seal {
+            animation: subtlePulse 2.5s infinite ease-in-out;
+        }
+
+        /* Scrollbar estilizada con terracota */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FAF6F0;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #a84e38;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="flex justify-center min-h-screen">
+
+    <!-- PANTALLA INICIAL DE SOBRE VIRTUAL -->
+    <div id="envelopeOverlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center p-4 bg-stone-900/90 backdrop-blur-md transition-opacity duration-700">
+        <p class="text-dustyRose-100 font-serif italic text-lg mb-6 tracking-wider animate-bounce text-center">
+            Tienes una invitación especial<br>
+            <span class="text-xs uppercase tracking-widest font-sans text-mustard-400 font-medium">Toca el sello para abrir</span>
+        </p>
+
+        <!-- Contenedor del Sobre 3D en Terracota rica -->
+        <div id="envelopeCard" class="envelope-wrapper relative w-[90%] max-w-[340px] h-[250px] bg-terracotta-700 rounded-2xl shadow-2xl flex flex-col items-center justify-between overflow-hidden cursor-pointer border border-terracotta-600">
+            <!-- Solapa superior plegable en Terracota limpia y estilizada -->
+            <div id="flap" class="envelope-flap absolute top-0 left-0 w-full h-[145px] bg-terracotta-800 border-b border-terracotta-900/40 shadow-md z-20 flex flex-col items-center pt-7 px-4 pointer-events-none">
+            </div>
+
+            <!-- Sello de Cera Mostaza / Ocre Dorado Reluciente (ubicado en el vértice de la solapa) -->
+            <div id="waxSeal" class="wax-seal pulse-seal absolute top-[105px] z-30 w-15 h-15 rounded-full bg-gradient-to-tr from-amber-700 via-mustard-500 to-amber-300 flex items-center justify-center border-2 border-yellow-100/60 shadow-2xl transition-all duration-500">
+                <div class="w-12 h-12 rounded-full border border-dashed border-amber-900/50 flex flex-col items-center justify-center p-1">
+                    <span class="font-serif font-bold text-plum-900 text-[11px] tracking-tighter">A & A</span>
+                    <i class="fa-solid fa-heart text-[7px] text-terracotta-700 mt-0.5"></i>
+                </div>
+            </div>
+
+            <!-- Sección inferior del sobre: Nombres de los novios debajo del sello -->
+            <div class="absolute bottom-5 z-10 w-full flex flex-col items-center px-4 text-center pointer-events-none">
+                <h2 class="font-script text-3xl sm:text-4xl text-dustyRose-50 tracking-wide drop-shadow-sm leading-tight">Alma &amp; Abiel</h2>
+                
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- CONTENEDOR PRINCIPAL TIPO MÓVIL -->
+    <main id="invitationContent" class="w-full max-w-[430px] bg-cream shadow-2xl relative min-h-screen pb-16 opacity-0 translate-y-8 transition-all duration-1000 bg-linen">
+
+        <!-- BOTÓN FLOTANTE DE CONTROL DE MÚSICA -->
+        <div class="fixed top-4 right-4 z-40">
+            <button id="floatingMusicBtn" onclick="toggleAudio()" class="w-11 h-11 rounded-full bg-terracotta-700 text-dustyRose-100 border border-mustard-400/40 shadow-xl flex items-center justify-center backdrop-blur-sm transition-transform active:scale-90 hover:scale-105">
+                <i id="musicIconFloating" class="fa-solid fa-music text-sm animate-spin-slow"></i>
+            </button>
+        </div>
+
+        <!-- REPRODUCTOR DE AUDIO OCULTO -->
+        <audio id="weddingSong" loop preload="auto" playsinline>
+            <source src="cancion.mp3" type="audio/mpeg">
+            Tu navegador no soporta el audio.
+        </audio>
+
+        <!-- HEADER / PORTADA CON SOLAPA DECORATIVA SUPERIOR EN TERRACOTA -->
+        <header class="relative bg-terracotta-700 text-center pt-10 pb-8 px-6 text-white shadow-lg overflow-hidden">
+            <!-- Detalles en ocre y verde bosque decorativos -->
+            <div class="absolute -top-10 -right-10 w-28 h-28 rounded-full border border-mustard-400/20 pointer-events-none"></div>
+            <div class="absolute -bottom-8 -left-8 w-24 h-24 rounded-full border border-eucalyptus-500/25 pointer-events-none"></div>
+
+            <p class="font-sans uppercase text-[10px] tracking-[0.3em] text-dustyRose-200/90 mb-2">Nuestra Boda</p>
+            <h1 class="font-script text-5xl sm:text-6xl text-dustyRose-50 drop-shadow-sm leading-tight">Alma</h1>
+            <span class="font-script text-3xl text-mustard-400 block my-1">&amp;</span>
+            <h1 class="font-script text-5xl sm:text-6xl text-dustyRose-50 drop-shadow-sm leading-tight">Abiel</h1>
+
+            <div class="inline-block mt-4 px-4 py-1 border-t border-b border-mustard-400/50">
+                <span class="font-serif tracking-widest text-xs uppercase text-dustyRose-100">28 . Noviembre . 2026</span>
+            </div>
+
+            <!-- Adorno corte angular inferior tipo solapa -->
+            <div class="absolute bottom-0 left-0 right-0 h-4 bg-cream" style="clip-path: polygon(0 100%, 50% 0, 100% 100%);"></div>
+        </header>
+
+        <!-- SECCIÓN: CITA BÍBLICA Y MONOGRAMA -->
+        <section class="py-8 px-6 text-center">
+            <!-- Guirnalda floral adaptada a la paleta del ramo: Eucalipto verde, rosa suave, terracota y ocre -->
+            <div class="w-full flex justify-center mb-3">
+                <svg class="w-56 h-14" viewBox="0 0 200 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 25 Q 60 5, 100 25 T 190 25" stroke="#2d5749" stroke-width="1.3" stroke-linecap="round" fill="none" opacity="0.75"/>
+                    <!-- Rosas y dalias en Terracota, Ciruela y Ocre -->
+                    <circle cx="100" cy="24" r="7" fill="#a84e38" opacity="0.95"/>
+                    <circle cx="100" cy="24" r="4" fill="#ca8a3e" opacity="0.9"/>
+                    <circle cx="85" cy="20" r="5" fill="#581d2c" opacity="0.85"/>
+                    <circle cx="115" cy="20" r="5" fill="#cf6b52" opacity="0.85"/>
+                    <circle cx="70" cy="23" r="3.5" fill="#d9abaa" opacity="0.95"/>
+                    <circle cx="130" cy="23" r="3.5" fill="#ca8a3e" opacity="0.85"/>
+                    <!-- Hojas de Eucalipto verde bosque -->
+                    <path d="M75 22 C 70 14, 80 12, 85 20 Z" fill="#2d5749" opacity="0.85"/>
+                    <path d="M125 22 C 130 14, 120 12, 115 20 Z" fill="#2d5749" opacity="0.85"/>
+                    <path d="M55 25 C 48 18, 58 15, 62 23 Z" fill="#3a6b5a" opacity="0.75"/>
+                    <path d="M145 25 C 152 18, 142 15, 138 23 Z" fill="#3a6b5a" opacity="0.75"/>
+                </svg>
+            </div>
+
+            <p class="font-serif italic text-xs leading-relaxed text-stone-600 max-w-xs mx-auto mb-5">
+                "Donde tú vayas, yo iré; donde tú vivas, viviré."
+                <span class="block font-sans not-italic font-semibold text-[10px] tracking-widest text-terracotta-700 mt-1 uppercase">Rut 1:16</span>
+            </p>
+
+            <!-- Monograma Doble con toque verde eucalipto -->
+            <div class="flex items-center justify-center gap-3 my-4">
+                <span class="font-serif text-3xl font-light text-eucalyptus-800 tracking-tighter border-r pr-3 border-stone-300">A</span>
+                <span class="font-serif text-3xl font-light text-eucalyptus-800 tracking-tighter">A</span>
+            </div>
+
+            <h3 class="font-sans text-[11px] font-semibold tracking-[0.25em] text-terracotta-700 uppercase mt-2">¡Nos Casamos!</h3>
+        </section>
+
+        <!-- FOTO PRINCIPAL DE LOS NOVIOS -->
+        <section class="px-5 mb-8">
+            <div class="relative p-2 bg-white shadow-lg rounded-xl overflow-hidden border border-dustyRose-200">
+                <img src="https://i.postimg.cc/t4MBgDPf/aa3.jpg" 
+                     alt="Alma y Abiel" 
+                     class="w-full h-80 object-cover rounded-lg filter brightness-[1.02] contrast-[0.98]">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent pointer-events-none rounded-xl"></div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN: REPRODUCTOR DE MÚSICA EMBEBIDO (En verde eucalipto y mostaza) -->
+        <section class="mx-5 mb-10 bg-eucalyptus-800 text-dustyRose-50 rounded-2xl p-5 shadow-xl text-center relative overflow-hidden border border-eucalyptus-700">
+            <p class="font-serif italic text-sm text-dustyRose-200 mb-3">Dale play a nuestra canción</p>
+            
+            <p id="songTitleDisplay" class="text-xs font-sans tracking-wider text-mustard-400 font-semibold mb-4">
+                Marry You - Bruno Mars
+            </p>
+
+            <!-- Controles del reproductor con acentos ocre/mostaza -->
+            <div class="flex items-center justify-center gap-6 text-dustyRose-200 text-lg">
+                <button onclick="rewindAudio()" title="Retroceder 10s" class="hover:text-mustard-400 transition active:scale-90">
+                    <i class="fa-solid fa-backward-step"></i>
+                </button>
+                <button id="mainPlayBtn" onclick="toggleAudio()" class="w-12 h-12 rounded-full bg-mustard-500 text-stone-900 flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 transition">
+                    <i id="playIcon" class="fa-solid fa-play ml-0.5 text-base text-plum-900"></i>
+                </button>
+                <button onclick="forwardAudio()" title="Adelantar 10s" class="hover:text-mustard-400 transition active:scale-90">
+                    <i class="fa-solid fa-forward-step"></i>
+                </button>
+            </div>
+
+            <!-- Barra de Progreso Interactiva en mostaza y verde -->
+            <div class="w-full bg-eucalyptus-900/90 rounded-full h-1.5 mt-4 cursor-pointer overflow-hidden" onclick="seekSong(event)">
+                <div id="songProgressBar" class="bg-mustard-400 h-1.5 rounded-full w-0 transition-all duration-200"></div>
+            </div>
+            <div class="flex justify-between text-[9px] text-dustyRose-300 font-sans mt-1">
+                <span id="currentTimeLabel">0:00</span>
+                <span id="durationLabel">--:--</span>
+            </div>
+        </section>
+
+        <!-- SECCIÓN: BENDICIÓN DE PADRES (Fondo rosa palo suave) -->
+        <section class="py-6 px-6 text-center bg-dustyRose-50/80 mx-5 rounded-2xl border border-dustyRose-200 mb-10">
+            <p class="font-serif italic text-xs text-stone-600 mb-4 leading-relaxed">
+                Con el amor que nos une, la bendición de Dios<br>y el apoyo de nuestros queridos padres:
+            </p>
+
+            <div class="grid grid-cols-1 gap-4 text-xs font-serif text-plum-900">
+                <div>
+                    <span class="text-[10px] uppercase font-sans tracking-widest text-terracotta-700 font-medium block mb-1">Padres de la Novia</span>
+                    <p class="font-semibold text-stone-800">Alberto Salazar Sánchez</p>
+                    <p class="font-semibold text-stone-800">Olga Leticia Cortes Sierra</p>
+                </div>
+                <div class="text-mustard-500 text-sm font-script">&amp;</div>
+                <div>
+                    <span class="text-[10px] uppercase font-sans tracking-widest text-terracotta-700 font-medium block mb-1">Padres del Novio</span>
+                    <p class="font-semibold text-stone-800">José Gilberto Vidales Milán</p>
+                    <p class="font-semibold text-stone-800">Guadalupe Anaya Rivera</p>
+                </div>
+            </div>
+
+            <p class="font-serif italic text-xs text-stone-600 mt-5 pt-3 border-t border-dustyRose-200">
+                Uniremos nuestras vidas en el sacramento del matrimonio.
+            </p>
+        </section>
+
+        <!-- SECCIÓN: CUENTA REGRESIVA Y FECHA (Estilo tarjeta Terracota y Mostaza) -->
+        <section class="bg-terracotta-700 text-white mx-4 rounded-3xl p-6 shadow-xl mb-10 text-center relative border border-terracotta-800">
+            <span class="font-sans uppercase text-[10px] tracking-[0.3em] text-mustard-400 font-semibold">Noviembre</span>
+            
+            <div class="flex items-center justify-center gap-3 my-2 border-y border-dustyRose-200/25 py-2 max-w-[220px] mx-auto">
+                <span class="font-sans uppercase tracking-widest text-xs text-dustyRose-100">Sábado</span>
+                <span class="font-serif text-4xl font-bold text-dustyRose-50">28</span>
+                <span class="font-serif text-xs text-dustyRose-100 tracking-widest">2026</span>
+            </div>
+
+            <p class="text-[10px] uppercase tracking-[0.3em] text-dustyRose-200 mt-4 mb-3 font-semibold">Faltan</p>
+
+            <!-- Reloj Regresivo con cajitas en ciruela profundo y bordes ocre -->
+            <div class="grid grid-cols-4 gap-2 max-w-[280px] mx-auto">
+                <div class="bg-terracotta-800/80 border border-mustard-500/30 rounded-xl py-2 px-1">
+                    <span id="countdownDays" class="font-serif text-xl sm:text-2xl font-bold block text-mustard-400">00</span>
+                    <span class="text-[9px] uppercase font-sans tracking-wider text-dustyRose-200">Días</span>
+                </div>
+                <div class="bg-terracotta-800/80 border border-mustard-500/30 rounded-xl py-2 px-1">
+                    <span id="countdownHours" class="font-serif text-xl sm:text-2xl font-bold block text-mustard-400">00</span>
+                    <span class="text-[9px] uppercase font-sans tracking-wider text-dustyRose-200">Horas</span>
+                </div>
+                <div class="bg-terracotta-800/80 border border-mustard-500/30 rounded-xl py-2 px-1">
+                    <span id="countdownMins" class="font-serif text-xl sm:text-2xl font-bold block text-mustard-400">00</span>
+                    <span class="text-[9px] uppercase font-sans tracking-wider text-dustyRose-200">Min</span>
+                </div>
+                <div class="bg-terracotta-800/80 border border-mustard-500/30 rounded-xl py-2 px-1">
+                    <span id="countdownSecs" class="font-serif text-xl sm:text-2xl font-bold block text-mustard-400">00</span>
+                    <span class="text-[9px] uppercase font-sans tracking-wider text-dustyRose-200">Seg</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN: CEREMONIA RELIGIOSA -->
+        <section class="px-6 mb-10 text-center">
+            <div class="w-12 h-12 rounded-full bg-dustyRose-100 flex items-center justify-center mx-auto mb-3 text-terracotta-700 border border-dustyRose-200 shadow-sm">
+                <i class="fa-solid fa-church text-base text-terracotta-700"></i>
+            </div>
+
+            <div class="my-2">
+                <h4 class="font-sans uppercase tracking-[0.2em] font-semibold text-xs text-terracotta-700">Ceremonia Religiosa</h4>
+                <span class="text-sm font-serif font-bold text-eucalyptus-800 block tracking-wide mt-1">16:00 hrs. (4:00 PM)</span>
+                <p class="font-serif italic text-base text-stone-800 mt-1 font-semibold">Parroquia del Espíritu Santo</p>
+                <p class="text-xs text-stone-500 font-sans mt-0.5">Blvd. Acapulco 619, Cañada Blanca, Guadalupe, N.L.</p>
+            </div>
+
+            <a href="https://www.google.com/maps/place/Parroquia+del+Esp%C3%ADritu+Santo/@25.7206433,-100.1849721,17z/data=!3m1!4b1!4m6!3m5!1s0x8662ea49fd25b425:0x96d12a9dee37907a!8m2!3d25.7206433!4d-100.1823972!16s%2Fg%2F1tg35n94" 
+               target="_blank" rel="noopener noreferrer" 
+               class="inline-flex items-center gap-2 mt-3 px-6 py-2.5 rounded-full bg-terracotta-700 text-dustyRose-50 text-xs font-sans tracking-wider uppercase font-semibold shadow-md hover:bg-terracotta-800 active:scale-95 transition">
+                <i class="fa-solid fa-location-dot text-mustard-400"></i>
+                Ver ubicación en Maps
+            </a>
+        </section>
+
+        <!-- SECCIÓN: RECEPCIÓN Y UBICACIÓN -->
+        <section class="px-6 mb-10 text-center">
+            <!-- Separador Floral superior -->
+            <div class="w-full flex justify-center items-center mb-4">
+                <div class="w-16 h-[1px] bg-terracotta-600/30"></div>
+                <div class="mx-2 text-terracotta-600"><i class="fa-solid fa-champagne-glasses text-xs"></i></div>
+                <div class="w-16 h-[1px] bg-terracotta-600/30"></div>
+            </div>
+
+            <!-- Segunda foto de novios -->
+            <div class="p-2 bg-white shadow-md rounded-xl max-w-[280px] mx-auto mb-6 border border-dustyRose-200">
+                <img src="https://i.postimg.cc/wjGwBFJZ/aa1.jpg" 
+                     alt="Recepción" 
+                     class="w-full h-64 object-cover rounded-lg">
+            </div>
+
+            <!-- Ícono circular representativo -->
+            <div class="w-12 h-12 rounded-full bg-dustyRose-100 flex items-center justify-center mx-auto mb-3 text-terracotta-700 border border-dustyRose-200 shadow-sm">
+                <i class="fa-solid fa-champagne-glasses text-base text-terracotta-700"></i>
+            </div>
+
+            <div class="my-2">
+                <h4 class="font-sans uppercase tracking-[0.2em] font-semibold text-xs text-terracotta-700">Recepción</h4>
+                <span class="text-sm font-serif font-bold text-eucalyptus-800 block tracking-wide mt-1">18:00 hrs. (6:00 PM)</span>
+                <p class="font-serif italic text-base text-stone-800 mt-1 font-semibold">Quinta Paulette</p>
+                <p class="text-xs text-stone-500 font-sans mt-0.5">Guadalupe, N.L.</p>
+            </div>
+
+            <a href="https://www.google.com/maps/place/Quinta+Paulette/@25.7193541,-100.1829351,17z/data=!3m1!4b1!4m6!3m5!1s0x8662ebbe4a3637c5:0x97b79d961c1ed80d!8m2!3d25.7193541!4d-100.1803602!16s%2Fg%2F11w4dkyzy4?entry=ttu&g_ep=EgoyMDI2MTAxNC4wIKXMDSoASAFQAw%3D%3D" 
+               target="_blank" rel="noopener noreferrer" 
+               class="inline-flex items-center gap-2 mt-3 px-6 py-2.5 rounded-full bg-eucalyptus-700 text-dustyRose-50 text-xs font-sans tracking-wider uppercase font-semibold shadow-md hover:bg-eucalyptus-800 active:scale-95 transition">
+                <i class="fa-solid fa-location-dot text-mustard-400"></i>
+                Ver ubicación en Maps
+            </a>
+        </section>
+
+        <!-- SECCIÓN: ITINERARIO DE ACTIVIDADES (Línea de tiempo) -->
+        <section class="py-8 px-6 bg-white/75 mx-4 rounded-2xl border border-dustyRose-200 mb-10">
+            <h3 class="font-sans text-xs font-bold uppercase tracking-[0.25em] text-center text-eucalyptus-800 mb-8">
+                Itinerario de Actividades
+            </h3>
+
+            <div class="relative border-l-2 border-terracotta-600/30 ml-24 mr-4 space-y-7">
+                <!-- Evento 1: Ceremonia -->
+                <div class="relative pl-6">
+                    <span class="absolute -left-[100px] top-0 text-[11px] font-sans font-semibold text-stone-500">16:00 hrs</span>
+                    <div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-terracotta-600 border-2 border-cream flex items-center justify-center">
+                        <div class="w-1.5 h-1.5 rounded-full bg-mustard-400"></div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-church text-terracotta-700 text-sm w-5 text-center"></i>
+                        <div>
+                            <p class="text-xs font-sans font-bold uppercase tracking-wider text-eucalyptus-900">Ceremonia</p>
+                            <p class="text-[10px] text-stone-500 font-serif">Parroquia del Espíritu Santo</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Evento 2: Recepción -->
+                <div class="relative pl-6">
+                    <span class="absolute -left-[100px] top-0 text-[11px] font-sans font-semibold text-stone-500">18:00 hrs</span>
+                    <div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-terracotta-600 border-2 border-cream flex items-center justify-center">
+                        <div class="w-1.5 h-1.5 rounded-full bg-mustard-400"></div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-champagne-glasses text-terracotta-700 text-sm w-5 text-center"></i>
+                        <div>
+                            <p class="text-xs font-sans font-bold uppercase tracking-wider text-eucalyptus-900">Recepción</p>
+                            <p class="text-[10px] text-stone-500 font-serif">Quinta Paulette</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Evento 3: Cena y Brindis -->
+                <div class="relative pl-6">
+                    <span class="absolute -left-[100px] top-0 text-[11px] font-sans font-semibold text-stone-500">19:00 hrs</span>
+                    <div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-eucalyptus-700 border-2 border-cream"></div>
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-utensils text-eucalyptus-700 text-sm w-5 text-center"></i>
+                        <div>
+                            <p class="text-xs font-sans font-bold uppercase tracking-wider text-eucalyptus-900">Cena y Brindis</p>
+                            <p class="text-[10px] text-stone-500 font-serif">Banquete y palabras de los novios</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Evento 4: Fiesta -->
+                <div class="relative pl-6">
+                    <span class="absolute -left-[100px] top-0 text-[11px] font-sans font-semibold text-stone-500">20:00 hrs</span>
+                    <div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-terracotta-600 border-2 border-cream"></div>
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-music text-terracotta-700 text-sm w-5 text-center"></i>
+                        <div>
+                            <p class="text-xs font-sans font-bold uppercase tracking-wider text-eucalyptus-900">Fiesta</p>
+                            <p class="text-[10px] text-stone-500 font-serif">¡Música y baile!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Evento 5: Mariachi -->
+                <div class="relative pl-6">
+                    <span class="absolute -left-[100px] top-0 text-[11px] font-sans font-semibold text-stone-500">22:00 hrs</span>
+                    <div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-mustard-500 border-2 border-cream"></div>
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-guitar text-mustard-500 text-sm w-5 text-center"></i>
+                        <div>
+                            <p class="text-xs font-sans font-bold uppercase tracking-wider text-eucalyptus-900">Mariachi</p>
+                            <p class="text-[10px] text-stone-500 font-serif">Música en vivo</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN: CÓDIGO DE VESTIMENTA -->
+        <section class="py-6 px-6 text-center mb-10">
+            <h4 class="font-sans text-xs font-bold uppercase tracking-[0.25em] text-eucalyptus-800 mb-2">
+                Código de Vestimenta
+            </h4>
+            <p class="font-serif italic text-base text-terracotta-700 font-semibold">Formal</p>
+
+            <!-- Siluetas / Ilustraciones detalladas de Vestido de Noche y Smoking -->
+            <div class="flex items-center justify-center gap-6 my-4 text-stone-700">
+                <!-- Vestido de noche elegante -->
+                <div class="flex flex-col items-center">
+                    <svg class="w-10 h-16 drop-shadow-sm transition-transform hover:scale-105" viewBox="0 0 64 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Percha / Cuello -->
+                        <path d="M26 12 C28 8 36 8 38 12" stroke="#a84e38" stroke-width="2" stroke-linecap="round"/>
+                        <!-- Tirantes y Escote de noche corazón -->
+                        <path d="M25 14 L23 24 Q32 28 41 24 L39 14" fill="#a84e38" opacity="0.9"/>
+                        <!-- Corsé ajustado -->
+                        <path d="M23 24 Q32 30 41 24 L38 42 Q32 44 26 42 Z" fill="#94412d"/>
+                        <!-- Cinturón fino / lazo dorado -->
+                        <rect x="25.5" y="41" width="13" height="2.5" rx="1.2" fill="#ca8a3e"/>
+                        <!-- Falda larga de gala con caída vaporosa tipo sirena/A-line -->
+                        <path d="M25.5 43.5 C24 55 14 85 11 96 C18 98 46 98 53 96 C50 85 40 55 38.5 43.5 Z" fill="#a84e38"/>
+                        <!-- Pliegues y luces del vestido -->
+                        <path d="M29 45 Q26 72 23 96" stroke="#f3d5cb" stroke-width="1.2" stroke-linecap="round" opacity="0.6"/>
+                        <path d="M35 45 Q38 72 41 96" stroke="#f3d5cb" stroke-width="1.2" stroke-linecap="round" opacity="0.6"/>
+                        <path d="M32 46 L32 96" stroke="#7c3523" stroke-width="1.2" opacity="0.4"/>
+                    </svg>
+                    <span class="text-[10px] font-serif italic text-stone-600 mt-1.5">Vestido midi o largo</span>
+                </div>
+
+                <!-- Divisor ornamental -->
+                <div class="h-12 w-[1px] bg-dustyRose-300/80"></div>
+
+                <!-- Smoking / Traje de etiqueta -->
+                <div class="flex flex-col items-center">
+                    <svg class="w-10 h-16 drop-shadow-sm transition-transform hover:scale-105" viewBox="0 0 64 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Cuello de camisa blanca -->
+                        <polygon points="32,20 25,12 39,12" fill="#FAF6F0"/>
+                        <!-- Moño / Pajarita negra -->
+                        <path d="M28 16 L36 20 L36 16 L28 20 Z" fill="#ca8a3e"/>
+                        <circle cx="32" cy="18" r="1.5" fill="#ab702c"/>
+                        <!-- Pechera de camisa blanca con botones -->
+                        <polygon points="32,38 27,18 37,18" fill="#FFFFFF"/>
+                        <circle cx="32" cy="24" r="0.8" fill="#2d5749"/>
+                        <circle cx="32" cy="29" r="0.8" fill="#2d5749"/>
+                        <circle cx="32" cy="34" r="0.8" fill="#2d5749"/>
+                        <!-- Saco de smoking con solapa en pico satinada -->
+                        <path d="M19 14 L27 18 L24 45 L32 50 L40 45 L37 18 L45 14 C48 24 47 38 46 52 L38 53 L32 50 L26 53 L18 52 C17 38 16 24 19 14 Z" fill="#234439"/>
+                        <!-- Solapas en contraste (satén) -->
+                        <path d="M22 15 L28 27 L25 44 L32 49 L32 38 L27 18 Z" fill="#1b352c"/>
+                        <path d="M42 15 L36 27 L39 44 L32 49 L32 38 L37 18 Z" fill="#1b352c"/>
+                        <!-- Pañuelo de bolsillo blanco -->
+                        <polygon points="23,30 26,27 27,30" fill="#FAF6F0"/>
+                        <!-- Pantalón formal de corte recto -->
+                        <path d="M23 52 L22 96 C24 97 28 97 29 96 L31.5 64 L34 96 C35 97 39 97 41 96 L40 52 Z" fill="#1b352c"/>
+                    </svg>
+                    <span class="text-[10px] font-serif italic text-stone-600 mt-1.5">Formal / Vestir</span>
+                </div>
+            </div>
+
+            <p class="font-serif italic text-xs text-stone-600 max-w-xs mx-auto">
+                Con mucho cariño, les pedimos evitar prendas en color blanco o colores claros.
+            </p>
+        </section>
+
+        <!-- SECCIÓN: SUGERENCIA DE REGALOS (Lluvia de sobres con verde eucalipto y dorado) -->
+        <section class="mx-5 mb-10 bg-eucalyptus-800 text-white rounded-2xl p-6 text-center shadow-lg border border-eucalyptus-700">
+            <div class="w-10 h-10 rounded-full bg-eucalyptus-900 flex items-center justify-center mx-auto mb-3 border border-mustard-400/40">
+                <i class="fa-solid fa-gift text-mustard-400 text-sm"></i>
+            </div>
+            
+            <h4 class="font-sans text-xs font-bold uppercase tracking-[0.2em] text-dustyRose-100 mb-2">
+                Sugerencia de Regalos
+            </h4>
+            <p class="font-serif italic text-xs text-dustyRose-200/90 leading-relaxed max-w-xs mx-auto mb-5">
+                El mejor regalo es tu presencia, pero si deseas tener un detalle con nosotros, ponemos a tu disposición estas opciones:
+            </p>
+
+            <!-- Opción 1: Mesa de Regalos Amazon -->
+            <div class="bg-eucalyptus-900/90 border border-mustard-400/30 rounded-xl p-4 text-center max-w-xs mx-auto shadow-inner mb-4">
+                <div class="flex items-center justify-center gap-2 mb-2 pb-2 border-b border-eucalyptus-700/60">
+                    <span class="text-[10px] uppercase tracking-wider font-sans text-dustyRose-200 font-semibold flex items-center gap-1.5">
+                        <i class="fa-brands fa-amazon text-mustard-400 text-sm"></i> Mesa de Regalos
+                    </span>
+                    <span class="text-[9px] uppercase tracking-widest text-mustard-400 bg-mustard-400/10 px-2 py-0.5 rounded-full font-sans font-medium">En línea</span>
+                </div>
+                
+                <p class="text-xs font-serif text-white tracking-wide mb-3">
+                    Encuentra nuestra lista de deseos en Amazon
+                </p>
+
+                <a href="https://www.amazon.com.mx/wedding/guest-view/28JWX53Q4YS88" 
+                   target="_blank" rel="noopener noreferrer"
+                   class="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-lg bg-mustard-500 hover:bg-mustard-600 text-stone-900 font-sans text-xs font-bold uppercase tracking-wider shadow-md transition active:scale-95">
+                    <i class="fa-solid fa-arrow-up-right-from-square text-[11px] text-plum-900"></i>
+                    Ver mesa de regalos en Amazon
+                </a>
+            </div>
+
+            <!-- Separador sutil -->
+            <div class="flex items-center justify-center gap-3 my-4 max-w-xs mx-auto">
+                <div class="h-[1px] bg-mustard-400/25 flex-1"></div>
+                <span class="text-[10px] font-sans uppercase tracking-widest text-dustyRose-300">o también</span>
+                <div class="h-[1px] bg-mustard-400/25 flex-1"></div>
+            </div>
+
+            <!-- Opción 2: Lluvia de Sobres y Datos Bancarios -->
+            <div class="bg-eucalyptus-900/90 border border-mustard-400/30 rounded-xl p-4 text-left max-w-xs mx-auto shadow-inner">
+                <div class="flex items-center justify-between mb-2 pb-2 border-b border-eucalyptus-700/60">
+                    <span class="text-[10px] uppercase tracking-wider font-sans text-dustyRose-200 font-semibold flex items-center gap-1.5">
+                        <i class="fa-regular fa-envelope text-mustard-400 text-xs"></i> Lluvia de Sobres
+                    </span>
+                    <span class="text-[9px] uppercase tracking-widest text-mustard-400 bg-mustard-400/10 px-2 py-0.5 rounded-full font-sans">Santander</span>
+                </div>
+                
+                <p class="text-[10px] uppercase font-sans tracking-wider text-dustyRose-300">Titular:</p>
+                <p class="text-xs font-serif font-bold text-white tracking-wide mb-2">ABIEL FALCÓN</p>
+                
+                <p class="text-[10px] uppercase font-sans tracking-wider text-dustyRose-300">Número de Tarjeta:</p>
+                <div class="flex items-center justify-between mt-0.5 bg-eucalyptus-950/70 px-2.5 py-1.5 rounded-lg border border-eucalyptus-700/50">
+                    <span id="cardNumberText" class="font-mono text-xs text-mustard-300 font-semibold tracking-wider">5579 1003 7689 1899</span>
+                    <button onclick="copyBankCard()" title="Copiar número" class="ml-2 text-dustyRose-200 hover:text-mustard-400 active:scale-90 transition p-1">
+                        <i id="copyCardIcon" class="fa-regular fa-copy text-xs"></i>
+                    </button>
+                </div>
+                <div id="copyFeedback" class="text-[10px] text-emerald-400 text-center font-sans mt-2 hidden transition-all">
+                    <i class="fa-solid fa-check text-[9px]"></i> ¡Número copiado al portapapeles!
+                </div>
+            </div>
+        </section>
+
+        <!-- FOTO 3 DE LOS NOVIOS -->
+        <section class="px-5 mb-10">
+            <div class="relative p-2 bg-white shadow-lg rounded-xl overflow-hidden border border-dustyRose-200">
+                <img src="https://i.postimg.cc/dVx50ndg/aa2.jpg" 
+                     alt="Alma y Abiel" 
+                     class="w-full h-72 object-cover rounded-lg filter brightness-[1.02]">
+            </div>
+        </section>
+
+        <!-- SECCIÓN: NO NIÑOS (SOLO ADULTOS) -->
+        <section class="px-6 mb-8 text-center">
+            <div class="bg-dustyRose-50/90 border border-dustyRose-200 rounded-2xl py-5 px-6 mx-auto max-w-sm shadow-sm">
+                <div class="w-9 h-9 rounded-full bg-terracotta-100/70 border border-terracotta-300/40 text-terracotta-700 flex items-center justify-center mx-auto mb-2.5">
+                    <i class="fa-solid fa-child-reaching text-sm"></i>
+                </div>
+                <h4 class="font-sans uppercase tracking-[0.2em] font-semibold text-xs text-terracotta-700 mb-1.5">
+                    No Niños
+                </h4>
+                <p class="font-serif italic text-xs text-stone-600 leading-relaxed max-w-xs mx-auto">
+                    Amamos a sus pequeños, pero hemos decidido que nuestro gran día sea un evento exclusivo para adultos. ¡Agradecemos su comprensión y esperamos que disfruten de la fiesta!
+                </p>
+            </div>
+        </section>
+
+        <!-- SECCIÓN: CONFIRMACIÓN DE ASISTENCIA (WHATSAPP) -->
+        <section class="mx-5 mb-12 bg-terracotta-700 text-white rounded-3xl p-7 text-center shadow-xl border border-terracotta-600 relative">
+            <div class="w-12 h-12 rounded-full bg-terracotta-800 border border-mustard-400/40 flex items-center justify-center mx-auto mb-3">
+                <i class="fa-solid fa-envelope-circle-check text-mustard-400 text-base"></i>
+            </div>
+
+            <h3 class="font-sans text-xs font-bold uppercase tracking-[0.25em] text-dustyRose-100 mb-2">
+                Confirmar Asistencia
+            </h3>
+            <p class="font-serif italic text-xs text-dustyRose-200 leading-relaxed max-w-xs mx-auto mb-5">
+                Agradecemos que confirmes tu asistencia antes del <strong>01 de noviembre</strong> para reservar tu lugar.
+            </p>
+
+            <!-- Botón que activa el Modal para WhatsApp -->
+            <button onclick="openRsvpModal()" class="w-full py-3.5 px-6 rounded-full bg-emerald-700 hover:bg-emerald-600 text-white font-sans text-xs uppercase font-bold tracking-widest shadow-lg flex items-center justify-center gap-2 transform active:scale-95 transition">
+                <i class="fa-brands fa-whatsapp text-lg text-emerald-300"></i>
+                Confirmar por WhatsApp
+            </button>
+        </section>
+
+        <!-- PIE DE PÁGINA / AGRADECIMIENTO -->
+        <footer class="text-center px-6 pt-4 pb-12">
+            <p class="font-sans uppercase text-[10px] tracking-[0.3em] text-stone-500 mb-2">Esperamos contar con su presencia</p>
+            <h2 class="font-script text-5xl text-terracotta-700">¡Muchas Gracias!</h2>
+            <div class="w-12 h-[1px] bg-mustard-500/50 mx-auto mt-4"></div>
+            <p class="font-serif italic text-xs text-stone-400 mt-2">A &amp; A &bull; 28.11.2026</p>
+        </footer>
+
+    </main>
+
+    <!-- MODAL PARA RECOPILAR DATOS Y CONFIRMAR POR WHATSAPP -->
+    <div id="rsvpModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-cream rounded-3xl p-6 w-full max-w-sm shadow-2xl border border-dustyRose-200 relative transform transition-all duration-300 scale-95" id="rsvpModalContent">
+            
+            <button onclick="closeRsvpModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-sand text-stone-600 flex items-center justify-center hover:bg-dustyRose-100">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+
+            <div class="text-center mb-5">
+                <span class="text-terracotta-700 font-script text-3xl">Confirmación</span>
+                <h4 class="font-sans text-xs uppercase tracking-widest font-bold text-stone-800 mt-1">¿Nos acompañas?</h4>
+            </div>
+
+            <!-- Formulario para armar el mensaje de WhatsApp -->
+            <form onsubmit="sendWhatsApp(event)" class="space-y-4">
+                <div>
+                    <label class="block text-[11px] font-sans font-semibold uppercase text-stone-600 tracking-wider mb-1">Nombre y Apellido</label>
+                    <input type="text" id="guestName" required placeholder="Ej. Carlos Rodríguez" 
+                           class="w-full px-3 py-2 text-xs rounded-xl border border-dustyRose-300 focus:outline-none focus:border-terracotta-600 bg-white">
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-sans font-semibold uppercase text-stone-600 tracking-wider mb-1">¿Asistirás al evento?</label>
+                    <select id="attendanceStatus" class="w-full px-3 py-2 text-xs rounded-xl border border-dustyRose-300 focus:outline-none focus:border-terracotta-600 bg-white">
+                        <option value="Si, confirmo con gusto mi asistencia">¡Sí, con mucho gusto asistiré! 🥂</option>
+                        <option value="Lamentablemente no podré asistir">Lamentablemente no podré asistir 🥺</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-sans font-semibold uppercase text-stone-600 tracking-wider mb-1">Número de personas</label>
+                    <select id="guestCount" class="w-full px-3 py-2 text-xs rounded-xl border border-dustyRose-300 focus:outline-none focus:border-terracotta-600 bg-white">
+                        <option value="1 persona">1 persona</option>
+                        <option value="2 personas" selected>2 personas</option>
+                        <option value="3 personas">3 personas</option>
+                        <option value="4 personas">4 personas</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-sans font-semibold uppercase text-stone-600 tracking-wider mb-1">Mensaje para los novios (opcional)</label>
+                    <textarea id="guestMessage" rows="2" placeholder="¡Muchas felicidades por su boda!" 
+                              class="w-full px-3 py-2 text-xs rounded-xl border border-dustyRose-300 focus:outline-none focus:border-terracotta-600 bg-white resize-none"></textarea>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full py-3 rounded-full bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-bold tracking-wider uppercase shadow-md flex items-center justify-center gap-2">
+                        <i class="fa-brands fa-whatsapp text-base text-emerald-300"></i>
+                        Enviar mensaje a WhatsApp
+                    </button>
+                    <p class="text-[9px] text-stone-400 text-center mt-2 font-sans">
+                        Se abrirá WhatsApp con los detalles precargados
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        /* ========================================================
+           CONFIGURACIÓN PERSONALIZABLE
+           ======================================================== */
+        const WHATSAPP_PHONE_NUMBER = "528131286520";
+        const WEDDING_DATE = new Date("November 28, 2026 16:00:00").getTime();
+
+        /* ========================================================
+           1. ANIMACIÓN DE APERTURA DEL SOBRE
+           ======================================================== */
+        const envelopeOverlay = document.getElementById('envelopeOverlay');
+        const envelopeCard = document.getElementById('envelopeCard');
+        const invitationContent = document.getElementById('invitationContent');
+        const weddingSong = document.getElementById('weddingSong');
+        let isOpened = false;
+
+        envelopeCard.addEventListener('click', openEnvelope);
+
+        function openEnvelope() {
+            if (isOpened) return;
+            isOpened = true;
+
+            envelopeCard.classList.add('envelope-open');
+            playAudioSafely();
+
+            setTimeout(() => {
+                envelopeOverlay.style.opacity = '0';
+                invitationContent.style.opacity = '1';
+                invitationContent.style.transform = 'translateY(0)';
+                
+                setTimeout(() => {
+                    envelopeOverlay.style.display = 'none';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }, 700);
+            }, 900);
+        }
+
+        /* ========================================================
+           2. REPRODUCTOR DE MÚSICA Y CONTROLES
+           ======================================================== */
+        const mainPlayBtn = document.getElementById('mainPlayBtn');
+        const playIcon = document.getElementById('playIcon');
+        const musicIconFloating = document.getElementById('musicIconFloating');
+        const songProgressBar = document.getElementById('songProgressBar');
+        const currentTimeLabel = document.getElementById('currentTimeLabel');
+        const durationLabel = document.getElementById('durationLabel');
+
+        let isPlaying = false;
+
+        function playAudioSafely() {
+            const playPromise = weddingSong.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    isPlaying = true;
+                    updateMusicUI(true);
+                }).catch(e => {
+                    console.log("Audio en espera de interacción manual:", e);
+                    isPlaying = false;
+                    updateMusicUI(false);
+                });
+            }
+        }
+
+        function toggleAudio() {
+            if (weddingSong.paused) {
+                weddingSong.play().then(() => {
+                    isPlaying = true;
+                    updateMusicUI(true);
+                }).catch(err => {
+                    console.error("Error al reproducir audio:", err);
+                });
+            } else {
+                weddingSong.pause();
+                isPlaying = false;
+                updateMusicUI(false);
+            }
+        }
+
+        function updateMusicUI(playing) {
+            if (playing) {
+                playIcon.className = 'fa-solid fa-pause text-base text-plum-900';
+                musicIconFloating.classList.add('animate-spin');
+                musicIconFloating.style.animationDuration = '4s';
+            } else {
+                playIcon.className = 'fa-solid fa-play ml-0.5 text-base text-plum-900';
+                musicIconFloating.classList.remove('animate-spin');
+            }
+        }
+
+        function rewindAudio() {
+            weddingSong.currentTime = Math.max(0, weddingSong.currentTime - 10);
+        }
+
+        function forwardAudio() {
+            weddingSong.currentTime = Math.min(weddingSong.duration || 0, weddingSong.currentTime + 10);
+        }
+
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return "0:00";
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        weddingSong.addEventListener('timeupdate', () => {
+            if (weddingSong.duration) {
+                const percent = (weddingSong.currentTime / weddingSong.duration) * 100;
+                songProgressBar.style.width = `${percent}%`;
+                currentTimeLabel.textContent = formatTime(weddingSong.currentTime);
+                durationLabel.textContent = formatTime(weddingSong.duration);
+            }
+        });
+
+        function seekSong(event) {
+            const bar = event.currentTarget;
+            const clickPosition = (event.clientX - bar.getBoundingClientRect().left) / bar.offsetWidth;
+            if (weddingSong.duration) {
+                weddingSong.currentTime = clickPosition * weddingSong.duration;
+            }
+        }
+
+        /* ========================================================
+           COPIAR NÚMERO DE TARJETA BANCARIA
+           ======================================================== */
+        function copyBankCard() {
+            const cardNumber = "5579100376891899";
+            const tempInput = document.createElement("input");
+            tempInput.value = cardNumber;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+
+            const feedback = document.getElementById("copyFeedback");
+            const icon = document.getElementById("copyCardIcon");
+
+            icon.className = "fa-solid fa-check text-emerald-400 text-xs";
+            feedback.classList.remove("hidden");
+
+            setTimeout(() => {
+                icon.className = "fa-regular fa-copy text-xs";
+                feedback.classList.add("hidden");
+            }, 3000);
+        }
+
+        /* ========================================================
+           3. CUENTA REGRESIVA DINÁMICA
+           ======================================================== */
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const difference = WEDDING_DATE - now;
+
+            if (difference > 0) {
+                const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+                document.getElementById('countdownDays').textContent = days < 10 ? '0' + days : days;
+                document.getElementById('countdownHours').textContent = hours < 10 ? '0' + hours : hours;
+                document.getElementById('countdownMins').textContent = minutes < 10 ? '0' + minutes : minutes;
+                document.getElementById('countdownSecs').textContent = seconds < 10 ? '0' + seconds : seconds;
+            } else {
+                document.getElementById('countdownDays').textContent = '00';
+                document.getElementById('countdownHours').textContent = '00';
+                document.getElementById('countdownMins').textContent = '00';
+                document.getElementById('countdownSecs').textContent = '00';
+            }
+        }
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        /* ========================================================
+           4. MODAL Y CONFIRMACIÓN POR WHATSAPP
+           ======================================================== */
+        const rsvpModal = document.getElementById('rsvpModal');
+        const rsvpModalContent = document.getElementById('rsvpModalContent');
+
+        function openRsvpModal() {
+            rsvpModal.classList.remove('hidden');
+            setTimeout(() => {
+                rsvpModal.classList.remove('opacity-0');
+                rsvpModalContent.classList.remove('scale-95');
+                rsvpModalContent.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeRsvpModal() {
+            rsvpModal.classList.add('opacity-0');
+            rsvpModalContent.classList.remove('scale-100');
+            rsvpModalContent.classList.add('scale-95');
+            setTimeout(() => {
+                rsvpModal.classList.add('hidden');
+            }, 300);
+        }
+
+        rsvpModal.addEventListener('click', (e) => {
+            if (e.target === rsvpModal) {
+                closeRsvpModal();
+            }
+        });
+
+        function sendWhatsApp(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('guestName').value.trim();
+            const attendance = document.getElementById('attendanceStatus').value;
+            const count = document.getElementById('guestCount').value;
+            const message = document.getElementById('guestMessage').value.trim();
+
+            let text = `¡Hola Alma y Abiel! ✨%0A%0A`;
+            text += `Soy *${encodeURIComponent(name)}*.%0A`;
+            text += `*Respuesta:* ${encodeURIComponent(attendance)}%0A`;
+            text += `*Cantidad de pases:* ${encodeURIComponent(count)}%0A`;
+
+            if (message) {
+                text += `*Mensaje:* "${encodeURIComponent(message)}"%0A`;
+            }
+
+            text += `%0A¡Muchas bendiciones por su unión matrimonial! 💍🥂`;
+
+            const waUrl = `https://api.whatsapp.com/send?phone=${WHATSAPP_PHONE_NUMBER}&text=${text}`;
+            window.open(waUrl, '_blank');
+            closeRsvpModal();
+        }
+    </script>
+</body>
+</html>
